@@ -2,6 +2,7 @@ import datetime
 import json
 import uuid
 import random
+import psycopg2
 
 
 inns = ['owner_1', 'owner_2', 'owner_3', 'owner_4']
@@ -86,3 +87,50 @@ if __name__ == '__main__':
     # данные для базы:
     data_tbl = list(data.values())
     documents_tbl = make_documents(data)
+
+    try:
+        connection = psycopg2.connect(
+            dbname='test_task_doc_db',
+            host='localhost',
+            user='db_user',
+            password='password111',
+        )
+        print("Подключение установлено")
+        cursor = connection.cursor()
+
+        cursor.executemany(
+            """INSERT INTO public.documents(
+            doc_id,
+            recieved_at,
+            document_type,
+            document_data
+            ) VALUES (
+            %(doc_id)s,
+            %(recieved_at)s,
+            %(document_type)s,
+            %(document_data)s
+            )""", documents_tbl)
+
+        cursor.executemany(
+            """INSERT INTO public.data(
+            object,
+            status,
+            level,
+            parent,
+            owner
+            ) VALUES (
+            %(object)s,
+            %(status)s,
+            %(level)s,
+            %(parent)s,
+            %(owner)s
+            )""", data_tbl)
+        connection.commit()
+        print("Объекты успешно загружены!")
+    except (Exception, psycopg2.Error) as error:
+        print("Ошибка при работе с PostgreSQL", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print("Соединение с PostgreSQL закрыто")
