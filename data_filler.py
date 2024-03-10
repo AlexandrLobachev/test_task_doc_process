@@ -81,13 +81,7 @@ def __make_doc(data: dict) -> dict:
                 'document_data': json.dumps(doc)}
     return doc_data
 
-
-if __name__ == '__main__':
-    data = make_data()
-    # данные для базы:
-    data_tbl = list(data.values())
-    documents_tbl = make_documents(data)
-
+def load_data(data_tbl, documents_tbl):
     try:
         connection = psycopg2.connect(
             dbname='test_task_doc_db',
@@ -134,3 +128,11 @@ if __name__ == '__main__':
             cursor.close()
             connection.close()
             print("Соединение с PostgreSQL закрыто")
+
+
+if __name__ == '__main__':
+    data = make_data()
+    # данные для базы:
+    data_tbl = list(data.values())
+    documents_tbl = make_documents(data)
+    load_data(data_tbl, documents_tbl)
