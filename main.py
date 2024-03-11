@@ -67,7 +67,7 @@ def parce_document(document: tuple) -> tuple:
 
 
 def check_data(data: list, values: dict) -> tuple:
-    """Возвращает PK объектов, с подходящими параметрами old."""
+    """Возвращает PK объектов, с подходящими параметрами."""
     mapping = {
         'status': 1,
         'owner': 4,
