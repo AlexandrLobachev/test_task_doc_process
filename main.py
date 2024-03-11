@@ -1,4 +1,3 @@
-import copy
 import psycopg2
 
 
@@ -73,7 +72,7 @@ def check_data(data: list, values: dict) -> tuple:
         'status': 1,
         'owner': 4,
     }
-    not_filtered_data = copy.deepcopy(data)
+    not_filtered_data = data.copy()
     filtered_data = []
     for detail, val in values.items():
         filtered_data.clear()
