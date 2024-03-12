@@ -79,17 +79,15 @@ def check_data(data: list, values: dict) -> tuple:
         for doc in not_filtered_data:
            if doc[mapping[detail]] == val:
                filtered_data.append(doc)
-           not_filtered_data = filtered_data
+           not_filtered_data = filtered_data.copy()
     return tuple([doc[0] for doc in filtered_data])
 
 
 def get_query(new_param: dict = None) -> str:
     """Формирует запрос к БД, для изменения параметров объектов."""
     query_for_doc = '''
-     UPDATE public.documents
-     SET processed_at = now()
-     WHERE documents.doc_id = %(document)s;
-     '''
+    UPDATE public.documents SET processed_at = now() WHERE documents.doc_id = %(document)s;
+    '''
 
     if not new_param:
         return query_for_doc
@@ -102,10 +100,7 @@ def get_query(new_param: dict = None) -> str:
         return ', '.join(values)
 
     parametrs = get_parametrs(new_param)
-    query_for_data = f'''
-    UPDATE public.data
-    SET {parametrs}
-    WHERE data.object IN %(objects)s;'''
+    query_for_data = f'''UPDATE public.data SET {parametrs} WHERE data.object IN %(objects)s;'''
     return ' '.join((query_for_data, query_for_doc))
 
 
